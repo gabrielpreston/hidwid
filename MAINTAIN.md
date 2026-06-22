@@ -22,33 +22,63 @@ Revisit this stance only if the corpus gains an external audience that expects
 continuous freshness. Until then, snapshot-before-publish is the right ceremony for
 the stakes.
 
-## Transport: vendoring via `git subtree`
+## Transport: vendoring via a clean tree-export
 
 This corpus can be **read** as a published snapshot, or **vendored** directly into a
-consuming repository as a `git subtree` — a real subdirectory of files (not a submodule
-pointer), so every clone and worktree of the consumer gets the corpus with zero extra
-lifecycle steps. When vendored, the publish/refresh ceremony below runs over subtree
-commands instead of a manual file copy:
+consuming repository as a real subdirectory of files (not a submodule pointer), so
+every clone and worktree of the consumer gets the corpus with zero extra lifecycle
+steps. When vendored, the publish/refresh ceremony below moves that subdirectory's
+tree to and from the corpus remote with git plumbing — `commit-tree` and `read-tree`.
 
-- **Refresh a vendored copy (pull down):**
-  `git subtree pull --prefix=<vendor-dir> <corpus-remote> main --squash`
-- **Publish improvements up (push up):**
-  `git subtree push --prefix=<vendor-dir> <corpus-remote> main`
+Let `<vendor-dir>` be the subdirectory the corpus lives in, `<corpus-remote>` the
+corpus repository (a git remote name or URL), and `<branch>` its publish branch.
+Fetch the remote first (`git fetch <corpus-remote> <branch>`) so the operations
+below parent/replace against its current tip.
 
-where `<vendor-dir>` is the subdirectory the corpus lives in and `<corpus-remote>` is
-this corpus's repository (a git remote name or URL).
+- **Publish improvements up (push up):** create exactly one commit whose tree *is*
+  the local vendor tree, parented on the remote tip, and push it:
+  ```bash
+  NEW=$(git commit-tree "$(git rev-parse HEAD:<vendor-dir>)" \
+          -p <corpus-remote>/<branch> -m "doctrine: refresh corpus snapshot")
+  git push <corpus-remote> "$NEW:refs/heads/<branch>"
+  ```
+- **Refresh a vendored copy (pull down):** replace the local subdirectory wholesale
+  with the remote tree, in one commit:
+  ```bash
+  git rm -r --cached <vendor-dir>
+  rm -rf <vendor-dir>
+  git read-tree --prefix=<vendor-dir>/ -u <corpus-remote>/<branch>
+  git commit -m "docs: pull doctrine corpus refresh"
+  ```
 
-- **Always pass `--squash`.** Mixing squashed and non-squashed subtree operations
-  corrupts the subtree merge markers and breaks future pulls. Pick squash once, keep it.
+Both directions are last-writer-wins snapshot semantics — they match the on-demand
+philosophy above (a refresh you choose to run, never a continuous mirror) and attempt
+no content merge. If the two trees have diverged, sync the *other* direction first.
+
+### Do NOT use `git subtree push`
+
+`git subtree push` is **banned** for this corpus — it is structurally wrong here, not
+merely risky:
+
+- **It replays full ancestry.** `git subtree push` runs `git subtree split`, which
+  rewalks the consumer's *entire* commit history. The original `git subtree add` records
+  a merge (`Merge commit '…' as '<vendor-dir>'`) that defeats a clean cut, so the split
+  replays the consumer's mainline into the public corpus repo — thousands of unrelated
+  commits, authored by the consumer's contributors, polluting a corpus that should carry
+  one snapshot commit per refresh. (This corpus was cleaned of exactly such a pollution:
+  7,756 commits collapsed back to one.)
+- **`--squash` does nothing on push.** `--squash` only affects merges *into* a repo on
+  `add`/`pull`. On push it is silently ignored — it cannot prevent the replay above.
+
+The plumbing recipe above sidesteps both: `commit-tree` takes the tree object directly,
+so there is no ancestry to walk and exactly one commit lands per sync.
+
+### Watch-item that still applies
+
 - **Never use a forge's "Squash and merge" button on a PR that touches `<vendor-dir>`.**
   A line-ending normalization in some forges (the 2024 GitHub CRLF case is the known
-  example) silently rewrites the subtree's bytes, desynchronizing the merge markers and
-  breaking the next `git subtree pull`. Merge such PRs with a normal merge commit.
-- **Verify `git subtree` is present** before relying on it — it ships in git's `contrib/`
-  and is not always on the default PATH on every host (`git subtree --help` should resolve).
-
-The on-demand philosophy above is unchanged by this transport: a vendored copy is still
-refreshed deliberately (a `subtree pull` you choose to run), never continuously mirrored.
+  example) silently rewrites the corpus's bytes, breaking a clean byte-for-byte compare
+  on the next sync. Merge such PRs with a normal merge commit.
 
 ## Refresh-before-publish checklist
 
@@ -144,8 +174,9 @@ refreshed deliberately (a `subtree pull` you choose to run), never continuously 
 
 8. **Re-publish the snapshot.** Push the refreshed files to the publish target and
    update the recorded URL / date wherever you track it. State the new snapshot date
-   in the README's provenance section if you keep one there. *(If the corpus is vendored
-   as a subtree, this "push" is `git subtree push` — see [Transport](#transport-vendoring-via-git-subtree).)*
+   in the README's provenance section if you keep one there. *(If the corpus is vendored,
+   this "push" is the clean tree-export `commit-tree` recipe — see
+   [Transport](#transport-vendoring-via-a-clean-tree-export); never `git subtree push`.)*
 
 ## What never gets ported
 
