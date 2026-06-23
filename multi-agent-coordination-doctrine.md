@@ -49,7 +49,7 @@ them:
    re-deriving the same starting context, waste the parallelism. *Fix: the lead owns
    shared files first, declares each agent's write scope, and embeds task context in
    the spawn prompt* so no agent explores to find where to start.
-3. **Consensus launders error.** N agents asked the same question tend to *agree* —
+3. **Agreement isn't validation.** N agents asked the same question tend to *agree* —
    including when they are all wrong. *Fix: a mandatory refuter* — an agent whose job
    is to disprove the finding, not concur with it.
 4. **Agents drift, stall, or exceed scope silently.** A spawned agent given a vague

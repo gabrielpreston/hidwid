@@ -127,7 +127,7 @@ against compounding a half-finished state.
 > **The reflex this enables:** "sync before you read state, and sync again before you
 > merge back." Because the command is one line and bounded-cost, a long-lived branch
 > runs it at every natural boundary. Divergence never accumulates to the point where
-> the merge-back is a research project.
+> the merge-back surfaces dozens of conflicts at once.
 
 ### Sync must re-assert branch-local state the merge can clobber
 

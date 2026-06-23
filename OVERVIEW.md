@@ -38,7 +38,7 @@ around it lifts cleanly into a project of your own.
 
 If you direct AI agents on a codebase and have felt the coordination cost start to bite
 — merge collisions, lost context between sessions, work you can't account for — the
-chapters below are the defenses, each with the scar that earned it.
+chapters below are the defenses, each with the incident that drove it.
 
 ## When this fits, and when it doesn't
 
@@ -117,7 +117,9 @@ agent is never the last word on whether work is correct. Most of the other six i
 exist to protect this one: to keep the human out of the plumbing, and to put a check
 between an agent's confidence and the trunk.
 → realized across the [multi-agent coordination](multi-agent-coordination-doctrine.md)
-chapter (the always-loaded agent brief, model-tier routing) and the review idea below.
+chapter (the always-loaded agent brief, model-tier routing), the
+[debugging discipline](debugging-discipline-doctrine.md) (an agent's guessed fix is
+never the last word on the cause), and the review idea below.
 
 ### 2. Concurrency without collision
 
@@ -161,9 +163,12 @@ it costs something. So each discipline is converted into a structure the build i
 checks: a pre-commit gate, a layer-boundary lint, a coverage floor, a never-wipe
 migration contract, a self-healing hook. Violating the rule becomes a visible failure
 instead of an invisible omission.
-→ realized in [engineering discipline](engineering-discipline-doctrine.md) and
+→ realized in [engineering discipline](engineering-discipline-doctrine.md),
 [working with the harness](claude-code-harness-doctrine.md) (the hooks that keep the gate
-alive).
+alive), the [debugging discipline](debugging-discipline-doctrine.md) (the four phases and
+the three-fix stop as procedure over reflex), and the
+[rule-authoring doctrine](rule-authoring-doctrine.md) (evidence a rule's failure, match its
+form, and harden it only where it's skipped).
 
 ### 6. Measured, attributed cost
 
@@ -181,10 +186,13 @@ question — whether the person on the receiving end would actually care, or qui
 review stage adds read-only **persona reviewers**, vivid and narrow stand-ins for real
 user archetypes, beside the craft reviewers, along with explicit defenses against
 AI-generated work converging on a generic, average-of-everything look. Convergence is
-countered by an adversarial seat, not by averaging more agreeable opinions.
+countered by an adversarial seat — a reviewer whose job is to disprove the work, not
+to concur with it.
 → realized in [the persona-reviewer guide](stakeholder-persona-guide.md) and
 [template](stakeholder-persona-template.md), and in
-[frontend anti-slop](frontend-anti-slop-doctrine.md).
+[frontend anti-slop](frontend-anti-slop-doctrine.md) and
+[prose anti-slop](prose-anti-slop-doctrine.md) — whose recipe-shaped form the
+[rule-authoring doctrine](rule-authoring-doctrine.md) explains (Part 2).
 
 ## The map
 
@@ -197,9 +205,12 @@ Each chapter realizes one or more of the big ideas above:
 | [worktree-git-workflow](worktree-git-workflow-doctrine.md) | [2](#2-concurrency-without-collision) | Parallel worktrees on one repo without collision |
 | [multi-agent-coordination](multi-agent-coordination-doctrine.md) | [1](#1-judgement-stays-human-typing-goes-to-agents) · [7](#7-defend-the-experience-in-review) | When and how to spawn a team; integrate without corruption |
 | [engineering-discipline](engineering-discipline-doctrine.md) | [5](#5-mechanical-enforcement-over-habit) | Turn each habit into a gate, floor, boundary, or census |
+| [debugging-discipline](debugging-discipline-doctrine.md) | [1](#1-judgement-stays-human-typing-goes-to-agents) · [5](#5-mechanical-enforcement-over-habit) | Find the cause before you change anything; three failed fixes means stop |
+| [rule-authoring](rule-authoring-doctrine.md) | [5](#5-mechanical-enforcement-over-habit) · [7](#7-defend-the-experience-in-review) | Author rules that hold: evidence the failure, match the form, harden against the excuse |
 | [cost-hygiene](cost-hygiene-doctrine.md) | [6](#6-measured-attributed-cost) | Measure and attribute spend; budget the standing context |
 | [claude-code-harness](claude-code-harness-doctrine.md) | [1](#1-judgement-stays-human-typing-goes-to-agents) · [5](#5-mechanical-enforcement-over-habit) | Make a permission-aware harness pull its weight |
 | [frontend-anti-slop](frontend-anti-slop-doctrine.md) | [7](#7-defend-the-experience-in-review) | Break the model's default look; look before you change |
+| [prose-anti-slop](prose-anti-slop-doctrine.md) | [7](#7-defend-the-experience-in-review) | Name the failure modes of generated text; read before you write |
 | [stakeholder-persona-guide](stakeholder-persona-guide.md) | [7](#7-defend-the-experience-in-review) | Build and deploy a roster of persona reviewers |
 | [stakeholder-persona-template](stakeholder-persona-template.md) | [7](#7-defend-the-experience-in-review) | The authoring scaffold for one persona |
 
@@ -209,6 +220,12 @@ Each chapter realizes one or more of the big ideas above:
 [worktree-git-workflow](worktree-git-workflow-doctrine.md) (how the concurrency
 underneath stays safe). Those three are the operating core; the rest are independent and
 read in any order, when their problem becomes yours.
+
+**Prefer to see it run before you read it named?** This page defines each part on its own.
+Its companion on-ramp, [**A day in the life**](A-DAY-IN-THE-LIFE.md), follows one work
+item from first filing to merge, retold at three depths — the same seven ideas shown
+catching real falls, in the order a working afternoon meets them. Read either first; they're built to be
+read together.
 
 ## Glossary
 

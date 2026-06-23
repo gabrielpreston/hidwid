@@ -527,8 +527,9 @@ keeps a clean seam between the tracker and the code.
 - **The boundary in one line:** codebase identifiers say *what*; the ids that link
   to *why* live in comments, commits, and the archive.
 
-Why it pays off: the tracker churns — ids get superseded, renamed, merged — and a
-codebase that embedded them ages into a decoder ring. Intent-named identifiers don't.
+Why it pays off: the tracker churns — ids get superseded, renamed, merged — so a
+codebase that embedded them forces a reader to look each id up before the name means
+anything. Intent-named identifiers read on their own.
 
 ---
 

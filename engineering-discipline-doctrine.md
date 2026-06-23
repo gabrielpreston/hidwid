@@ -5,7 +5,7 @@
 > silent omission.
 
 **TL;DR — the mechanisms**
-- Transitive ownership: a failure you can see is now yours, whoever caused it.
+- Transitive ownership: a failure you see is yours, whoever caused it — and a success you claim needs fresh evidence, not confidence.
 - A pre-commit gate (lint + typecheck + test) every commit must pass.
 - Layered import boundaries enforced by lint, not by convention.
 - Coverage floors that act as regression floors, set just below current.
@@ -76,12 +76,13 @@ its backstop defend; the speculative-pass gate (§7) protects the costliest chan
 of all — a widening of the shared type contract — by measuring its blast radius
 before the work is scoped.
 
-A recurring sub-theme worth naming up front: **a structural enforcement is only as
-trustworthy as its blind spots are explicit.** A coverage gate that silently
-passes when no tests ran, a migration census that counts a deleted test as
-covered, a budget check that a worktree can bypass — each is a gate that *looks*
-green while enforcing nothing. Several rules below spend their hardest design
-effort not on the happy path but on closing the gate's own escape hatches.
+A recurring sub-theme worth naming up front: **a gate that can pass without
+enforcing anything is worse than no gate, because the green result buys false
+confidence.** A coverage gate that silently passes when no tests ran, a migration
+census that counts a deleted test as covered, a budget check that a worktree can
+bypass — each *looks* green while enforcing nothing. Several rules below spend
+their hardest design effort not on the happy path but on closing the gate's own
+escape hatches.
 
 ---
 
@@ -134,6 +135,33 @@ actionable by the one person guaranteed to be present — the one looking at the
 right now. The opening baseline check exists precisely to *force* that observation
 early, so the choice is made deliberately at the start rather than discovered at
 the close.
+
+### Evidence over confidence — the success-side mirror
+
+Ownership governs the failures you *see*; its mirror governs the successes you
+*claim*. **Make no "done" or "passing" claim without fresh evidence in the same
+breath — run the check, read the output, then claim.** A remembered green from
+earlier in the session, a confident "that should work," a subagent's report of
+success — none of these is evidence; they are assertions about a build state nobody
+just observed. Confidence is not evidence, and the gap between them is exactly where
+a regression hides: the change that "obviously" couldn't break anything, claimed
+done without a re-run, inherited as background red by the next session.
+
+The two halves are one posture: an honest relationship to the build's actual state.
+One half forbids ignoring red you saw; the other forbids asserting green you didn't.
+Both fail the same way — substituting what you *believe* about the build for what you
+just *watched* it do. The discipline is to close that gap at the moment of the claim,
+not to be more careful in general.
+
+This posture has two enforcement points elsewhere in the corpus, and naming them
+keeps this from being mere exhortation. When the work is delegated, a subagent's
+green report is a *claim* the lead re-verifies before accepting it — the
+post-completion validation gate in the
+[multi-agent coordination doctrine](./multi-agent-coordination-doctrine.md). When the
+harness allows it, the claim is mechanically gated: a stop-hook loop that re-runs the
+checks and refuses to let a turn end on an unproven "done" — the run-until-verifiable
+loop in the [harness doctrine](./claude-code-harness-doctrine.md). The posture is the
+general form; those two are where it is made to bind.
 
 ### Adapt this
 
@@ -615,7 +643,8 @@ arrives rather than all at once:
 
 The non-negotiable core, if you adopt nothing else: **a single pre-commit gate
 that every change passes and that CI re-runs un-bypassably**, and the posture that
-**every failure you see is yours to fix, capture, or escalate.** The gate is where
+**every failure you see is yours to fix, capture, or escalate — and no success is
+claimed without fresh evidence.** The gate is where
 the standing invariants get enforced; transitive ownership is what keeps the gate's
 own inherited failures from rotting. Everything else — the one-directional layer
 lint, the coverage ratchet, the migration census, the id-scoped data model — is a

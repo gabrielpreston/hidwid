@@ -1,4 +1,4 @@
-# Cost hygiene: doctrine without measurement is unfalsifiable
+# Cost hygiene: measure every session's spend, budget the standing context
 
 > **In one line.** Make every session leave a cost trace attributed to its work, and keep
 > the standing context every session re-reads on a budget — so spend is explained and the
@@ -7,6 +7,7 @@
 **TL;DR — the mechanisms**
 - One shared capture point logs every session's cost, tagged by ticket and branch.
 - A context budget caps the always-loaded surface so it can't creep silently.
+- Path-scoped rules auto-load only when a matching file is read — a third mode between resident and read-on-demand.
 - Mid-session levers — compact, clear, rewind — bound the context tax as you go.
 - Effort tiers match model spend to how hard the task actually is.
 
@@ -67,8 +68,9 @@ cheap once and costly a million times. The discipline is to **budget each
 auto-loaded surface, warn when it exceeds budget, and pair every addition with a
 shed** so the standing set stays curated rather than accreting.
 
-The two halves share a worldview: *what you do not measure, you cannot manage, and
-what you do not shed structurally, you will not shed at all.*
+The two halves share a method: measure spend per session so each cost claim can be
+tested, and shed context through a structural gate because nobody sheds it by
+intention.
 
 ---
 
@@ -313,6 +315,34 @@ fires). Adding a new rule file without pruning equivalent volume elsewhere is wh
 trips the gate. The session-start warning checks the aggregate alongside each
 per-file check — one script, one run, two signals.
 
+### Path-scope the situational rules so they cost nothing until they apply
+
+The budget and the ceiling fight the always-loaded surface's *size*; a third lever
+attacks its *membership*. Not every rule needs to be resident every session. A rule
+that only applies when you touch a particular surface — a deploy rule when editing the
+deploy config, a migration rule when editing the persistence layer — can be
+**path-scoped** (`«path-scope»`): tagged with the file globs it governs and loaded
+*automatically but conditionally*, only when the session (lead or subagent) reads a
+matching file, instead of always-on. It is a third mode between the two the rest of
+Part 2 assumes:
+
+- **Always-loaded (resident).** In the context every turn; pays the full per-turn tax;
+  the surface the budget and the ceiling bound.
+- **Load-on-demand (rehomed).** Moved to a location a human reads deliberately; zero
+  standing cost, but it only arrives if someone remembers to fetch it.
+- **Path-scoped (conditional auto-load).** Keeps the *automatic delivery* of the
+  resident mode — it fires without anyone remembering — while shedding the *standing
+  cost*, because it isn't in the context when the work doesn't touch its surface.
+
+Path-scoping is what lets the resident set shrink to the genuinely cross-cutting rules
+without exiling the situational ones to a directory nobody reads. Two properties to
+hold straight: **measure the budget and the ceiling against the resident set only** —
+path-scoped rules aren't always present, so counting them would re-inflate the number
+you moved them out of; and the resident set is **snapshotted at session start**, so
+re-scoping a rule takes effect next session, not mid-one. The discriminator for which
+mode a rule belongs in is one question: *must this hold regardless of which file is
+open?* If yes, it is resident; if it only governs a surface, path-scope it.
+
 ### Warn at the moment of orientation; gate at the moment of writing
 
 Two enforcement points, deliberately different in force:
@@ -437,6 +467,7 @@ longest-lived and most-cached. Two standing moves:
 | `«value-signal»` | the optional per-session critic-catch field | the categorical (caught/noise/nothing) that powers the ceremony-value ledger |
 | `«merge-timings-log»` | the append-only JSONL at the base repo root | your per-merge-event timing log (e2e gate seconds + lock-held seconds), separate from the session cost log |
 | `«corpus-ceiling»` | the total-lines cap on the always-loaded rule corpus | your aggregate ceiling over all auto-loaded rule files; prune trigger when exceeded |
+| `«path-scope»` | the `paths:` rule-file frontmatter that conditionally auto-loads | your mechanism for loading a situational rule only when a matching file is read (lead + subagent), measured against the resident set, not always-on |
 | `«compact»` / `«clear»` / `«rewind»` | the context-management verbs | your harness's compact / reset / drop-last-turn operations |
 | effort lever | the `/effort` rungs | your harness's reasoning/effort dial, if it has one — a cost lever with an intelligence floor |
 | escalation trigger | the ~$N/session live-monitor threshold | your measured trigger for graduating from a flat log to live monitoring |

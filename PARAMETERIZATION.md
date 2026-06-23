@@ -84,8 +84,10 @@ Fill `«gate»` once, mentally, and reuse it across all files.
 | `«stop-hook»` / `«session-end-hook»` / `«budget-check-hook»` / `«catalog-check-hook»` | Your harness lifecycle hooks | harness · cost |
 | `«goal-source»` / `«protected-paths»` / `«protected-files»` | Standing-goal source · paths agents must not touch · high-blast-radius lead-only files | harness · multi-agent |
 | `«settings»` / `«telemetry-log»` / `«usage-insight»` | Harness settings file · the cost log · the usage-reporting tool | harness · cost |
+| `«plugin-config»` | The harness's plugin/extension enable setting (switch an external discipline library on/off) | harness |
 | `«capture-script»` / `«cost-tool»` / `«session-ticket»` / `«captured-via»` | The single cost-capture point · cost CLI · ticket-attribution var · capture-source tag | cost |
 | `«compact»` / `«clear»` / `«rewind»` | Your context-management commands | cost |
+| `«path-scope»` | The rule-frontmatter mechanism that conditionally auto-loads a situational rule only when a matching file is read (a third mode between resident and read-on-demand) | cost |
 
 ## Multi-agent coordination
 
@@ -106,6 +108,16 @@ Fill `«gate»` once, mentally, and reuse it across all files.
 | `«house-default»` / `«model-tell-block»` / `«its-default-palette»` | Your model's default house style · the warning block naming it · its give-away palette | frontend |
 | `«token-source»` / `«display-font»` / `«body-font-chain»` | Your design-token source of truth · display typeface · body/data font fallback chain | frontend |
 | `«rubric»` / `«verdict-subagent»` / `«cycle-cap»` / `«stale-transform-check»` | The review rubric · the throwaway verdict agent · the edit-cycle cap · the served-transform freshness check | frontend |
+
+## Prose anti-slop
+
+| Slot | What you fill it with | Defined in |
+|---|---|---|
+| `«failure-modes»` | Your durable structural rubric — the shapes generated text fails in, model-version-independent | prose |
+| `«banned-words»` / `«banned-tics»` | Your perishable lexical appendix (overused words · punctuation reflexes), dated and re-audited each model tier | prose |
+| `«voice»` | The registers you ship, each with its own in-force / relaxed failure modes | prose |
+| `«reader-seat»` / `«critic-seat»` | Your two review stances — immersion check vs. adversarial slop-hunt | prose |
+| `«authoring-agent»` / `«gen-tier»` / `«critic-tier»` | The prose-owning agent · its generation model tier · the one-step-up rubric-check tier | prose |
 
 ## Persona reviewers
 

@@ -127,16 +127,21 @@ so there is no ancestry to walk and exactly one commit lands per sync.
 5. **Re-read the navigation table.** If you added, removed, or retitled a file,
    update the navigation table and the "read it when" column in the README.
 
-6. **Re-sync the altitude headers.** The corpus carries a layered on-ramp
-   ([`OVERVIEW.md`](OVERVIEW.md) + a standardized header on each chapter); when a body
+6. **Re-sync the altitude headers.** The corpus carries a layered on-ramp — two sibling
+   on-ramps, [`OVERVIEW.md`](OVERVIEW.md) (the anatomy: ideas named one at a time) and
+   [`A-DAY-IN-THE-LIFE.md`](A-DAY-IN-THE-LIFE.md) (the physiology: those ideas shown in
+   motion across one slice), plus a standardized header on each chapter; when a body
    changes, the layers above it can silently go stale. For every chapter you edited:
    - Re-check its **`TL;DR — the mechanisms`** block still matches the body's actual
      mechanisms (a removed/added Part means a removed/added bullet).
    - Re-check the **`In one line`** and **`Read this when`** lines still hold.
    - If the change touched one of the seven big ideas, re-check that idea's paragraph in
-     `OVERVIEW.md` and the chapter's `Big ideas` / `Depends on` back-links.
+     `OVERVIEW.md`, the chapter's `Big ideas` / `Depends on` back-links, **and** the
+     beat-index table in `A-DAY-IN-THE-LIFE.md` (it labels each beat with an idea + chapter,
+     so a renamed idea or retitled chapter stales a cell or a link there).
    - If you added, removed, or retitled a chapter, update the `OVERVIEW.md` map table and
-     the chapter's row, and add/remove its altitude header.
+     the chapter's row, add/remove its altitude header, and re-check the
+     `A-DAY-IN-THE-LIFE.md` beat-index links into it.
 
 7. **Run the consistency check.** A grep-level sweep that catches header drift, broken
    cross-links, and orphaned glossary terms. None of these should print anything:

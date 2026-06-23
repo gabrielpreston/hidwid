@@ -42,8 +42,8 @@ code, and how it closes.
 
 ## Why this shape
 
-A session is the atomic unit of "I sat down and did a thing." Left unstructured it
-has two failure modes that compound across a team:
+A session is one person or agent sitting down to do one piece of work. Left
+unstructured it has two failure modes that compound across a team:
 
 1. **Ceremony taxes the wrong work.** The open ceremony that a *new feature* needs
    — pick an item, claim it, branch, sync, baseline-check — is pure overhead for a

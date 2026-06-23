@@ -6,8 +6,8 @@ permission-aware CLI harness. It is the distilled, project-agnostic form of a
 working playbook — the *mechanisms* and the *why*, with every project-specific
 noun pulled out into a fill-in **`«slot»`**.
 
-It is **prose to read and adapt**, not a package to install. There is no runnable
-tool here. Where the doctrine describes a CLI (`bl`, the backlog tool) or a script,
+It is **prose to read and adapt**: there is no runnable tool here. Where the
+doctrine describes a CLI (`bl`, the backlog tool) or a script,
 it documents the shape and contract so you can build or port your own — it does not
 ship the implementation. (See *What's not here* below.)
 
@@ -41,21 +41,27 @@ concurrency or merge mechanics.
 ## How to navigate
 
 If you're new, read **[`OVERVIEW.md`](OVERVIEW.md)** first — it carries the pitch, the
-seven big ideas, and a map. From there, the spine is **session-lifecycle** (one front
-door in, one gate out) and **backlog-system** (what the lifecycle operates on); the rest
-are independent and read in any order.
+seven big ideas, and a map. For the same material in motion rather than named one at a
+time, **[`A-DAY-IN-THE-LIFE.md`](A-DAY-IN-THE-LIFE.md)** walks one work item from first
+filing to merge at three depths. From there, the spine is **session-lifecycle** (one front door in,
+one gate out) and **backlog-system** (what the lifecycle operates on); the rest are
+independent and read in any order.
 
 | File | What it covers | Read it when |
 |---|---|---|
 | [`OVERVIEW.md`](OVERVIEW.md) | The on-ramp: plain-language pitch, the seven big ideas, the map of chapter → idea, the one reading-path, a glossary | You're new to the corpus, or want the shape before the mechanisms |
+| [`A-DAY-IN-THE-LIFE.md`](A-DAY-IN-THE-LIFE.md) | The companion on-ramp: one concurrent-session slice — start to finish — retold at three depths (happy path → what held it up → failing safely); doubles as a story-shaped index into the chapters | You've read OVERVIEW's parts and want to watch them run together under load |
 | [`session-lifecycle-doctrine.md`](session-lifecycle-doctrine.md) | The session spine: a multi-flow entry router, the ordered ready-check, the close-out gate, multi-session pause/resume | You're designing how a session starts, hands off, and ends |
 | [`backlog-system-doctrine.md`](backlog-system-doctrine.md) | File-per-work-item backlog: state in frontmatter, claims as exclusive-create git refs, the stage machine + decomposition gate, typed parent items | You need a concurrent-safe backlog without a server or DB |
 | [`worktree-git-workflow-doctrine.md`](worktree-git-workflow-doctrine.md) | Parallel worktrees on one repo: claim liveness, merge discipline, the merge-lock, branch identity, trunk-leak detection | Multiple worktrees share one `.git` and you must keep them from colliding |
 | [`multi-agent-coordination-doctrine.md`](multi-agent-coordination-doctrine.md) | When to spawn agents, model-tier routing, the team vs. parallel-spawn choice, three-phase integration, worktree isolation for committing agents | You're dispatching a team of subagents and need them to coordinate, not corrupt each other's branches |
 | [`engineering-discipline-doctrine.md`](engineering-discipline-doctrine.md) | The per-commit gate, layer-boundary enforcement, coverage floors, the never-wipe save-migration contract, the no-singleton (swap) contract, the warn→error lint ratchet | You're setting the invariants the codebase enforces mechanically rather than by habit |
+| [`debugging-discipline-doctrine.md`](debugging-discipline-doctrine.md) | The four-phase root-cause procedure (root cause → pattern → hypothesis → fix), boundary instrumentation for multi-layer failures, and the three-fix rule | An agent is about to change code to chase a bug whose cause it hasn't named |
 | [`cost-hygiene-doctrine.md`](cost-hygiene-doctrine.md) | Measuring per-session/per-ticket cost, the single shared capture point, prompt-cache preservation, effort tiers, context-management commands | Spend is unexplained and you want it measured and attributed, not guessed |
 | [`claude-code-harness-doctrine.md`](claude-code-harness-doctrine.md) | Working *with* a permission-aware harness: allowlist-friendly commands, self-healing hooks, the run-until-verifiable loop, tool-to-job matching (structured editor / batch substitute / symbol nav) | You're tuning how agents act under a gated CLI and its hooks |
 | [`frontend-anti-slop-doctrine.md`](frontend-anti-slop-doctrine.md) | Look-before-you-change UI screenshots, the model's default house style and how to break it, the two-surface font policy | An agent is producing player-/user-facing UI and you want it to not look generated |
+| [`prose-anti-slop-doctrine.md`](prose-anti-slop-doctrine.md) | The structural failure modes of generated text, the re-auditable lexical appendix, the read-aloud pass, per-voice calibration | An agent is producing player-/user-facing prose and you want it to not read as generated |
+| [`rule-authoring-doctrine.md`](rule-authoring-doctrine.md) | The meta-doctrine for authoring rules: evidence it (name the real failure it prevents), form it (discipline → prohibit, shaping → recipe; why prohibitions backfire), enforce it (harden a skipped rule with a rationalization table) | You're writing a rule, or one you wrote isn't changing the behavior you wanted |
 | [`stakeholder-persona-guide.md`](stakeholder-persona-guide.md) | How to build and deploy a roster of read-only persona reviewers beside your craft reviewers | You want engagement/UX defended in review, not just correctness |
 | [`stakeholder-persona-template.md`](stakeholder-persona-template.md) | The authoring template for a single persona reviewer | You're writing one persona and need the slot-by-slot scaffold |
 | [`PARAMETERIZATION.md`](PARAMETERIZATION.md) | The consolidated catalogue of every `«slot»` across the corpus, grouped by concern | You're adapting the doctrine and need every fill-in-the-blank in one place |

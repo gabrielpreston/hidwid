@@ -11,10 +11,11 @@
 - One validator, two callers (local gate + CI) with an auditable bypass seam.
 - A run-until-verifiable loop the agent can't declare done without proving.
 - A periodic hygiene sweep that mines the harness's own telemetry for friction.
+- Vendor an external library's worthwhile disciplines; don't enable a frame calibrated for other stakes.
 
 **Read this when** you're tuning how agents act under a gated CLI and its hooks.
 **Big ideas:** [judgement stays human](OVERVIEW.md#1-judgement-stays-human-typing-goes-to-agents) · [mechanical enforcement over habit](OVERVIEW.md#5-mechanical-enforcement-over-habit)
-**Depends on:** [engineering discipline](engineering-discipline-doctrine.md) (the gate its hooks keep alive)
+**Depends on:** [engineering discipline](engineering-discipline-doctrine.md) (the gate its hooks keep alive) · [rule-authoring](rule-authoring-doctrine.md) (re-casting an imported gate into your own form, §7)
 
 ---
 
@@ -22,8 +23,10 @@ How to make an agentic coding harness *pull its weight* instead of fighting it �
 by shaping the agent's actions to the harness's permission model, making the local
 enforcement hooks heal themselves instead of silently dying, sharing one validator
 between the local gate and CI, closing a verifiable-completion loop the agent
-cannot game, and periodically mining the harness's own telemetry for the friction
-worth automating away. The premise is that a coding agent runs inside a host with
+cannot game, periodically mining the harness's own telemetry for the friction
+worth automating away, and adopting its extension ecosystem by vendoring what fits
+rather than enabling a frame calibrated for other stakes. The premise is that a coding
+agent runs inside a host with
 an opinionated control surface — a permission matcher, lifecycle hooks, a stop
 gate, a session-telemetry log — and that surface is either a source of constant
 low-grade friction or a set of leverage points, depending on whether your
@@ -82,6 +85,11 @@ answer:
   periodic sweep that reads the rejection log and usage signal turns accumulated
   annoyance into a small number of mechanical fixes, and prunes the auto-loaded
   context that has gone stale (§6).
+- **The harness's extension ecosystem ships disciplines wrapped in their author's
+  calibration.** A well-made plugin still encodes stakes that may contradict yours, and
+  enabling its whole frame forces the agent to suppress the conflicting gates every turn.
+  So external tooling is evaluated against your own doctrine and adopted by *vendoring*
+  the parts that fit, not by importing the frame (§7).
 
 The unifying move is the same one the engineering-discipline doctrine makes for
 correctness, applied to the *harness relationship*: find the place where you are
@@ -439,6 +447,67 @@ auto-delete.**
 
 ---
 
+## Part 7 — evaluate external tooling against your own calibration; vendor, don't frame-import
+
+### The posture
+
+**An external discipline library is adopted by vendoring the parts that earn a place
+into your own rules, in your own form — never by enabling the whole frame it ships
+as.** A mature agentic harness has an extension ecosystem: plugins, skill packs, and
+discipline libraries you can switch on in one line (`«plugin-config»`). The good ones
+are genuinely well-made, and that is the trap — a well-made library still encodes *its
+author's* stakes calibration, baked into fixed ceremonies and hard gates, and that
+calibration may directly contradict yours.
+
+The failure mode is specific. A generic discipline library tends to ship its rules as
+**fixed ceremony** — a mandatory brainstorming phase, a test-first iron law that deletes
+code written before its test, a blocking menu at the end of a branch. Enable the frame
+and every one of those becomes a standing instruction the agent reads each turn. Where
+one contradicts your own doctrine — a hard brainstorming gate against your *act when you
+have enough information* stance, a delete-the-code TDD law against a coverage policy that
+exempts content and UI, a blocking finish-the-branch menu against an autonomous close —
+the model now has to **suppress the conflicting gate every turn**, which is both
+low-grade friction and a standing risk it follows the wrong one at the wrong moment.
+Co-residency is not free; two calibrations in the context is one too many.
+
+### The move: triage, vendor, disable, record
+
+The adoption is four steps, and the order matters:
+
+1. **Triage each discipline against your existing doctrine, not in the abstract.** For
+   every rule the library brings, ask two questions: does it fill a *real gap* you don't
+   already cover, and does its *form* fit how you operate (stakes-calibrated vs
+   fixed-ceremony)? A discipline can be correct and still be the wrong shape for you —
+   note that and plan to re-author its form, not just its content (the
+   [rule-authoring doctrine](./rule-authoring-doctrine.md): a fixed-ceremony gate is a
+   prohibition that may need re-casting as a stakes-calibrated recipe).
+2. **Vendor the parts that earn a place.** Copy the discipline into your *own* rule or
+   skill set, rewritten at your calibration and in your form, with its provenance noted.
+   Vendoring decouples the good discipline from the conflicting ceremony around it — you
+   get the part that's worth having without importing the frame that fights you. (The
+   same move the engineering doctrine makes for code: don't import across a boundary to
+   borrow one thing; add the abstraction you actually need at the right layer.)
+3. **Disable the frame, but keep the cache.** Turn the plugin off so its ceremonies stop
+   loading every turn; leave it installed so re-adoption is one line if the calibration
+   ever changes. A disabled-but-cached frame costs nothing per turn and stays available.
+4. **Record the calibration verdict.** Write down *why* the frame was rejected and which
+   disciplines were vendored, in a durable note (a decision record or memory). Without
+   it, the next person to notice the well-made library re-litigates the whole evaluation
+   from scratch — and a rejection that isn't written down reads as an oversight, not a
+   decision.
+
+### Adapt this
+
+*Slots to fill:* `«plugin-config»` (your harness's plugin/extension enable setting). The
+portable invariant: **an external tool's defaults encode its author's stakes, not yours;
+adopt the disciplines, not the ceremony; vendor the parts that earn a place into your own
+form rather than enabling the frame that carries them; and record the calibration verdict
+so it survives.** This is the §2 tool-fit move one level up — there, an explicit override
+corrects a harness default tuned for a different case; here, a deliberate vendor-and-disable
+corrects a *whole library* calibrated for different stakes.
+
+---
+
 ## Parameterization seams
 
 | Slot | Source binding | Agnostic form |
@@ -460,6 +529,7 @@ auto-delete.**
 | `«telemetry-log»` | the per-session tool-use JSONL | where the harness records each session's tool calls and rejections |
 | `«usage-insight»` | the soft-friction insight signal | the host signal for accepted-but-wasteful patterns, if any |
 | `«settings»` | the user/project permission config | the config a pattern-backed mechanical fix edits |
+| `«plugin-config»` | the harness's plugin/extension enable setting | where you switch an external discipline library on or off |
 
 ---
 
@@ -505,6 +575,9 @@ arrives:
 - **The hygiene sweep (§6)** once the harness has produced enough telemetry that
   friction has accumulated and the auto-loaded context has started to drift stale —
   typically a quarter or two in.
+- **External-tooling evaluation (§7)** the first time you're tempted to enable a
+  well-made plugin or discipline library — before switching it on, not after the friction
+  of two calibrations in the context has already cost you turns.
 
 The non-negotiable core, if you adopt nothing else: **shape the agent's actions to
 the permission matcher's grain (§1), make local hooks self-healing and back them
